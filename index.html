@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Interactive Lesson - GIF Travel Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/drag-drop-touch/1.1.0/dragdroptouch.min.js"></script>
+
+    <style>
+        :root {
+            --color-pink: #ffccd5;
+            --color-purple: #8e44ad;
+            --pure-white: #ffffff;
+            --bg-side: #f7f1fb;
+            --study-blue: #3498db;
+            --study-red: #e74c3c;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+            background-image: url('background.jpg'); background-size: cover;
+            background-position: center; background-attachment: fixed;
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+            touch-action: none;
+        }
+
+        .taiwan-clock {
+            position: absolute;
+            top: 15px; left: 15px; background: var(--pure-white); padding: 8px 20px; 
+            border-radius: 50px; font-weight: 700; color: var(--color-purple); z-index: 1000;
+            border: 2px solid var(--color-pink);
+        }
+
+        /* --- WIDGET STYLES --- */
+        .widget-launcher {
+            position: absolute;
+            right: 20px; top: 100px;
+            display: flex; flex-direction: column; gap: 15px; z-index: 1000;
+        }
+        .icon-btn {
+            width: 65px; height: 65px; background: white; border: 4px solid var(--color-purple);
+            border-radius: 50%; font-size: 32px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            touch-action: manipulation;
+        }
+        .floating-window {
+            position: absolute;
+            background: white; border: 4px solid var(--color-purple);
+            border-radius: 25px; padding: 15px; display: none; flex-direction: column;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            z-index: 1100;
+            touch-action: none;
+        }
+        .window-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+            cursor: move; background: #f9f9f9; padding: 15px 12px; border-radius: 15px; }
+        .window-title { font-weight: 800; color: var(--color-purple); font-size: 14px; pointer-events: none; }
+        .close-win { cursor: pointer; font-weight: 900; color: #ff7675; font-size: 24px; padding: 5px; }
+        
+        #whiteboard { border: 2px solid #eee; background: #fff; cursor: crosshair; touch-action: none; border-radius: 15px; width: 100%; height: 350px; }
+        
+        /* Picker Styles */
+        .picker-display { font-size: 90px; font-weight: 800; color: #e67e22; text-align: center; margin: 5px 0; height: 110px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .picker-controls { display: flex; gap: 10px; margin-bottom: 10px; }
+        .picker-controls input { width: 100%; padding: 10px; border-radius: 10px; border: 2px solid var(--color-purple); font-family: 'Fredoka'; font-weight: 700; }
+        .remaining-count { font-size: 14px; text-align: center; color: #7f8c8d; margin-top: 5px; }
+
+        .timer-widget-display { font-size: 60px; font-weight: 800; color: #e74c3c; text-align: center; margin: 5px 0; }
+        .timer-input-area { display: flex; justify-content: center; align-items: center; gap: 5px; margin-bottom: 10px; font-size: 14px; }
+        .timer-input-area input { width: 55px; height: 40px; border-radius: 8px; border: 2px solid var(--color-purple); text-align: center; font-family: 'Fredoka'; font-weight: 700; font-size: 18px; }
+        .win-btn { background: var(--color-purple); color: white; border: none; padding: 15px; border-radius: 15px; cursor: pointer; font-family: 'Fredoka'; font-weight: 700; width: 100%; margin-top: 5px; font-size: 18px; touch-action: manipulation; }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 25px; width: 55px; height: 55px;
+            background: #ff7675; color: white; border: none; border-radius: 50%;
+            font-size: 28px; font-weight: 900;
+            cursor: pointer; z-index: 101;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 0px #d63031; transition: 0.1s;
+        }
+
+        .main-view { height: 78vh; display: flex; justify-content: center; align-items: center; padding: 10px; margin-top: 2vh; }
+
+        .content-card {
+            display: none;
+            background: var(--pure-white); width: 95%; max-width: 1100px;
+            height: 100%; border-radius: 40px; border: 8px solid var(--color-pink);
+            position: relative; overflow: hidden; z-index: 10;
+        }
+        .content-card.active { display: flex; }
+
+        #reward-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 200; display: none; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+        }
+        #reward-screen h2 { font-size: 80px; color: var(--color-purple); margin: 0; animation: bounce 0.6s infinite alternate; }
+
+        .side-tabs { width: 150px; background: var(--bg-side); display: flex; flex-direction: column; padding: 15px 8px; gap: 10px; border-right: 4px solid var(--color-pink); }
+        .side-btn {
+            flex: 1;
+            border: 3px solid transparent; background: white; cursor: pointer; font-family: 'Fredoka';
+            font-weight: 700; font-size: 24px; color: #a4b0be; writing-mode: vertical-rl; transform: rotate(180deg);
+            text-align: center; border-radius: 20px; transition: 0.2s;
+            touch-action: manipulation;
+        }
+        .side-btn.active { color: white; background: var(--color-purple); font-size: 26px; }
+
+        .card-body { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; text-align: center; }
+        
+        .section-title { font-size: 45px; color: var(--color-purple); font-weight: 700; margin-bottom: 20px; }
+        .weather-sentence { font-size: 50px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
+        .weather-drop-zone { width: 220px; height: 80px; border: 5px dashed var(--color-purple); border-radius: 25px; display: inline-flex; align-items: center; justify-content: center; background: #fafafa; }
+        
+        .weather-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 550px; }
+        .weather-pill { padding: 15px; background: white; border: 4px solid var(--color-purple); border-radius: 50px; font-size: 26px; font-weight: 700; cursor: grab; display: flex; align-items: center; justify-content: center; touch-action: none; }
+        
+        .glass-jar { width: 220px; height: 200px; background: rgba(142, 68, 173, 0.05); border: 6px solid var(--color-purple); border-top: none; border-radius: 15px 15px 80px 80px; display: flex; flex-wrap: wrap; align-content: flex-end; justify-content: center; padding: 15px; position: relative; }
+
+        .answer-reveal { 
+            height: 90px; display: flex; align-items: center; justify-content: center;
+            font-size: 60px; font-weight: 900; color: #27ae60; background: white; padding: 0 50px; 
+            border-radius: 30px; border: 6px solid #2ecc71; box-shadow: 0 8px 0px #27ae60;
+            opacity: 0; visibility: hidden; transition: opacity 0.15s; margin-top: 15px;
+        }
+        .answer-reveal.show { opacity: 1; visibility: visible; }
+        
+        .clue-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 10px 0; }
+        .clue-box { width: 200px; height: 130px; background: #f0f0f0; border: 4px solid var(--color-pink); border-radius: 20px; overflow: hidden; }
+        .clue-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .gif-display { width: 380px; height: 260px; background: #f9f9f9; border: 5px solid var(--color-pink); border-radius: 30px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .gif-display img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .drop-box { width: 180px; height: 80px; border-bottom: 6px solid var(--color-purple); display: inline-flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 10px; margin: 0 10px; vertical-align: middle; }
+        .quiz-word-bank { display: flex; gap: 15px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
+        .quiz-word { padding: 15px 30px; background: white; border: 3px solid var(--color-purple); border-radius: 50px; font-size: 28px; font-weight: 700; cursor: grab; touch-action: none; }
+
+        .gif-flag { width: 320px; border-radius: 20px; border: 6px solid var(--color-pink); margin-bottom: 20px; }
+        .gif-row { display: flex; gap: 20px; justify-content: center; margin-top: 15px; }
+        .gif-row img { width: 220px; height: 160px; border-radius: 20px; border: 4px solid #eee; object-fit: cover; background: white; }
+        
+        .poster-row { display: flex; gap: 15px; justify-content: center; }
+        .poster-row img { width: 220px; height: 300px; object-fit: cover; border-radius: 15px; border: 5px solid var(--color-purple); }
+
+        .nav-container { height: 18vh; display: flex; justify-content: center; align-items: center; gap: 15px; }
+        .tab-btn { background: white; color: var(--color-purple); border: 3px solid var(--color-purple); padding: 15px 35px; cursor: pointer; font-family: 'Fredoka'; font-size: 24px; font-weight: 700; border-radius: 20px; box-shadow: 0 6px 0px var(--color-purple); touch-action: manipulation; }
+        .tab-btn.active { background: var(--color-purple); color: white; transform: translateY(4px); box-shadow: none; }
+        
+        .sub-section { display: none; width: 100%; flex-direction: column; align-items: center; height: 100%; justify-content: center; }
+        .sub-section.active { display: flex; }
+
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-20px); } }
+    </style>
+</head>
+<body>
+
+    <div class="taiwan-clock" id="clock">Taiwan: --:--:--</div>
+
+    <div class="widget-launcher">
+        <button class="icon-btn" id="music-toggle-btn" onclick="toggleMusic()">🎵</button>
+        <button class="icon-btn" onclick="toggleWin('win-draw')">✏️</button>
+        <button class="icon-btn" onclick="toggleWin('win-pick')">🎲</button>
+        <button class="icon-btn" onclick="toggleWin('win-time')">⏲️</button>
+    </div>
+
+    <div id="win-draw" class="floating-window" style="top: 50px; left: 50px; width: 600px;">
+        <div class="window-header" onmousedown="dragWin(event, 'win-draw')" ontouchstart="dragWinTouch(event, 'win-draw')">
+            <span class="window-title">WHITEBOARD</span>
+            <span class="close-win" onclick="toggleWin('win-draw')">✕</span>
+        </div>
+        <canvas id="whiteboard" width="570" height="350"></canvas>
+        <button class="win-btn" style="background:#e74c3c;" onclick="clearBoard()">Clear Board</button>
+    </div>
+
+    <div id="win-pick" class="floating-window" style="top: 150px; left: 150px; width: 320px;">
+        <div class="window-header" onmousedown="dragWin(event, 'win-pick')" ontouchstart="dragWinTouch(event, 'win-pick')">
+            <span class="window-title">STUDENT PICKER</span>
+            <span class="close-win" onclick="toggleWin('win-pick')">✕</span>
+        </div>
+        <div class="picker-controls">
+            <input type="number" id="picker-max" value="25" min="1" placeholder="Total Students">
+            <button class="win-btn" style="width: auto; padding: 10px 15px; margin: 0;" onclick="resetPicker()">Reset</button>
+        </div>
+        <div class="picker-display" id="picker-num">--</div>
+        <div class="remaining-count" id="picker-left">Numbers left: --</div>
+        <button class="win-btn" id="roll-btn" onclick="rollStudent()">Roll Drumroll!</button>
+    </div>
+
+    <div id="win-time" class="floating-window" style="top: 200px; right: 100px; width: 300px;">
+        <div class="window-header" onmousedown="dragWin(event, 'win-time')" ontouchstart="dragWinTouch(event, 'win-time')">
+            <span class="window-title">TIMER</span>
+            <span class="close-win" onclick="toggleWin('win-time')">✕</span>
+        </div>
+        <div class="timer-input-area">
+            <input type="number" id="t-min" value="1" min="0"> m 
+            <input type="number" id="t-sec" value="0" min="0" max="59"> s
+            <button class="win-btn" style="width:auto; margin:0 0 0 10px; padding:10px 15px;" onclick="setTimer()">Set</button>
+        </div>
+        <div class="timer-widget-display" id="timer-txt">01:00</div>
+        <button class="win-btn" id="timer-toggle" onclick="toggleTimer()">Start Timer</button>
+    </div>
+
+    <div class="main-view">
+        <div id="main-card" class="content-card">
+            <button class="close-btn" onclick="closeCard()">✕</button>
+
+            <div id="reward-screen">
+                <h2>Good Job! 🏆</h2>
+                <button class="tab-btn" style="margin-top:20px;" onclick="hideReward()">Continue</button>
+            </div>
+            
+            <div id="greetings-layout" style="display: none; width: 100%; height: 100%;">
+                <div class="side-tabs">
+                    <button class="side-btn active" onclick="switchSub(event, 'greet-sub')">Greetings</button>
+                    <button class="side-btn" onclick="switchSub(event, 'weather-sub')">Weather</button>
+                    <button class="side-btn" onclick="switchSub(event, 'how-are-you-sub')">How are you?</button>
+                </div>
+                <div class="card-body">
+                    <div id="greet-sub" class="sub-section active"><h1 style="font-size: 70px; color: var(--color-purple);">Good afternoon! ✨</h1></div>
+                    <div id="weather-sub" class="sub-section">
+                        <h2 class="section-title">How's the weather?</h2>
+                        <div class="weather-sentence">It's <div class="weather-drop-zone" id="weather-dz" ondrop="dropWeather(event)" ondragover="allowDrop(event)"></div>.</div>
+                        <div class="weather-grid">
+                            <div class="weather-pill" draggable="true" ondragstart="drag(event)" id="sunny">☀️ sunny</div>
+                            <div class="weather-pill" draggable="true" ondragstart="drag(event)" id="rainy">🌧️ rainy</div>
+                            <div class="weather-pill" draggable="true" ondragstart="drag(event)" id="cloudy">☁️ cloudy</div>
+                            <div class="weather-pill" draggable="true" ondragstart="drag(event)" id="stormy">⛈️ stormy</div>
+                        </div>
+                    </div>
+                    <div id="how-are-you-sub" class="sub-section">
+                        <h2 class="section-title">How are you today?</h2>
+                        <div style="display:flex; gap:30px; margin-bottom:20px;">
+                            <div class="emoji-source" draggable="true" data-type="happy" style="font-size:70px; cursor:grab; border:3px solid var(--color-pink); padding:10px; border-radius:20px; touch-action: none;" ondragstart="dragInfinite(event)">😊</div>
+                            <div class="emoji-source" draggable="true" data-type="sad" style="font-size:70px; cursor:grab; border:3px solid var(--color-pink); padding:10px; border-radius:20px; touch-action: none;" ondragstart="dragInfinite(event)">😢</div>
+                        </div>
+                        <div class="glass-jar" id="jar-body" ondrop="dropAndPop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="warmup-layout" style="display: none; width: 100%; height: 100%;">
+                <div class="side-tabs">
+                    <button class="side-btn" onclick="switchSub(event, 'q1-sub')">Quiz 1</button>
+                    <button class="side-btn" onclick="switchSub(event, 'q2-sub')">Quiz 2</button>
+                </div>
+                <div class="card-body">
+                    <div id="warmup-intro" class="sub-section active"><h1 style="font-size: 45px; color: var(--color-purple); text-align: center;">Today we will visit 3 countries and discover what they do best!</h1></div>
+                    <div id="q1-sub" class="sub-section">
+                        <h2 style="font-size: 35px; margin:0;">Guess the Country!</h2>
+                        <div class="clue-grid">
+                            <div class="clue-box"><img id="q1-c1" src=""></div>
+                            <div class="clue-box"><img id="q1-c2" src=""></div>
+                            <div class="clue-box"><img id="q1-c3" src=""></div>
+                            <div class="clue-box"><img id="q1-c4" src=""></div>
+                        </div>
+                        <div id="q1-answer" class="answer-reveal">AUSTRALIA</div>
+                    </div>
+                    <div id="q2-sub" class="sub-section">
+                        <h2 style="font-size: 35px; margin:0 0 10px 0;">Guess the Action!</h2>
+                        <div class="gif-display"><img id="q2-gif" src=""></div>
+                        <div id="q2-answer" class="answer-reveal">SWIM</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="review-layout" style="display: none; width: 100%; height: 100%;">
+                <div class="side-tabs">
+                    <button class="side-btn active" onclick="switchSub(event, 'rev-study')">Study</button>
+                    <button class="side-btn" onclick="switchSub(event, 'rev-sentences')">Sentences</button>
+                    <button class="side-btn" onclick="switchSub(event, 'rev-quiz')">Short Quiz</button>
+                </div>
+                <div class="card-body">
+                    <div id="rev-study" class="sub-section active">
+                        <h2 style="font-size: 75px; color: var(--color-purple); margin-bottom: 30px; font-weight: 800; text-align: center;">Can you dance?</h2>
+                        <div style="display: flex; gap: 20px; width: 100%; justify-content: center;">
+                            <div style="background: var(--study-blue); padding: 20px; border-radius: 30px; color: white; flex: 1; max-width: 400px;">
+                                <img src="up.gif" style="width: 100px;"><br><span style="font-size: 40px; font-weight: 800;">Yes, I can.</span>
+                            </div>
+                            <div style="background: var(--study-red); padding: 20px; border-radius: 30px; color: white; flex: 1; max-width: 400px;">
+                                <img src="down.gif" style="width: 100px;"><br><span style="font-size: 40px; font-weight: 800;">No, I can't.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="rev-sentences" class="sub-section">
+                        <h2 id="rev-q-text" style="font-size: 60px; color: var(--color-purple);">Can you dance?</h2>
+                        <div class="gif-display"><img id="rev-gif" src=""></div>
+                        <div id="rev-reveal-box" class="answer-reveal" style="border:none; box-shadow:none; gap:20px;">
+                            <img id="rev-thumb" src="" style="width:100px;">
+                            <span id="rev-answer-text" style="font-size: 60px; font-weight: 900; color:#27ae60;">Yes, I can.</span>
+                        </div>
+                    </div>
+                    <div id="rev-quiz" class="sub-section">
+                        <div class="gif-display" style="width:300px; height:200px; margin-bottom:15px;"><img id="quiz-pic" src=""></div>
+                        <div id="quiz-sentence" style="font-size: 45px; font-weight: 700; color: var(--color-purple);"></div>
+                        <div class="quiz-word-bank" id="quiz-bank"></div>
+                        <div id="quiz-feedback" style="height:40px; color:#27ae60; font-size:30px; font-weight:bold; margin-top:10px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="learning-layout" style="display: none; width: 100%; height: 100%;">
+                <div class="side-tabs">
+                    <button class="side-btn active" onclick="switchSub(event, 'learn-airport')">Airport</button>
+                    <button class="side-btn" onclick="switchSub(event, 'learn-australia')">Australia</button>
+                    <button class="side-btn" onclick="switchSub(event, 'learn-france')">France</button>
+                    <button class="side-btn" onclick="switchSub(event, 'learn-korea')">S. Korea</button>
+                    <button class="side-btn" onclick="switchSub(event, 'learn-ready')">Ready</button>
+                    <button class="side-btn" onclick="switchSub(event, 'learn-posters')">Posters</button>
+                </div>
+                <div class="card-body">
+                    <div id="learning-container" class="sub-section active"></div>
+                </div>
+            </div>
+
+            <div id="exit-layout" style="display: none; width: 100%; height: 100%;">
+                <div class="side-tabs">
+                    <button class="side-btn active" onclick="switchSub(event, 'exit-worksheet')">Worksheet</button>
+                    <button class="side-btn" onclick="switchSub(event, 'exit-thanks')">Thanks</button>
+                </div>
+                <div class="card-body">
+                    <div id="exit-worksheet" class="sub-section active">
+                        <h1 class="section-title">WORKSHEET TIME!</h1>
+                        <img src="worksheet.gif" style="width: 400px; border-radius: 20px;">
+                    </div>
+                    <div id="exit-thanks" class="sub-section">
+                        <h1 class="section-title">THANK YOU EVERYONE!</h1>
+                        <img src="heart.gif" style="width: 300px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-container">
+        <button class="tab-btn" onclick="openNav(event, 'greetings')">Greetings</button>
+        <button class="tab-btn" onclick="openNav(event, 'warmup')">Warm-up</button>
+        <button class="tab-btn" onclick="openNav(event, 'review')">Review</button>
+        <button class="tab-btn" onclick="openNav(event, 'learning')">Learning</button>
+        <button class="tab-btn" onclick="openNav(event, 'exit')">Exit</button>
+    </div>
+
+    <audio id="bg-music" loop src="classroom-jazz.mp3"></audio>
+    <audio id="cheer-sound" src="cheer.mp3"></audio>
+    <audio id="correct-sound" src="correct.mp3"></audio>
+    <audio id="happy-sound" src="happy.mp3"></audio>
+    <audio id="sad-sound" src="sad.mp3"></audio>
+    <audio id="ticking-sound" src="ticking.mp3"></audio>
+    <audio id="alarm-sound" src="alarm.mp3"></audio>
+    <audio id="drumroll-sound" src="drumroll.mp3"></audio>
+
+    <script>
+        let q1Index = 0, q2Index = 0, currentSub = 'greet-sub';
+        let revIdx = 0, quizIdx = 0, quizAnswered = false;
+        let learnSlideIdx = 0;
+        
+        const q1Data = [
+            { name: "AUSTRALIA", imgs: ["au1.jpg", "au2.jpg", "au3.jpg", "au4.jpg"] },
+            { name: "FRANCE", imgs: ["fr1.jpg", "fr2.jpg", "fr3.jpg", "fr4.jpg"] },
+            { name: "SOUTH KOREA", imgs: ["kr1.jpg", "kr2.jpg", "kr3.jpg", "kr4.jpg"] }
+        ];
+        const q2Data = ["swim", "jump", "read", "write", "sing", "dance", "draw"];
+        const revData = [
+            { q: "dance", gif: "dance.gif", thumb: "up.gif", ans: "Yes, I can.", ok: true },
+            { q: "swim",  gif: "read.gif",  thumb: "down.gif", ans: "No, I can't.", ok: false },
+            { q: "jump",  gif: "jump.gif",  thumb: "up.gif", ans: "Yes, I can.", ok: true },
+            { q: "read",  gif: "sing.gif", thumb: "down.gif", ans: "No, I can't.", ok: false },
+            { q: "write", gif: "write.gif", thumb: "up.gif", ans: "Yes, I can.", ok: true }
+        ];
+        const quizItems = [
+            { q: "Can you swim? <br> No, I <div class='drop-box' data-ans='can&apos;t'></div>.", pic: "dance.gif" },
+            { q: "Can you jump? <br> Yes, I <div class='drop-box' data-ans='can'></div>.", pic: "jump.gif" },
+            { q: "Can <div class='drop-box' data-ans='you'></div> sing? <br> Yes, I can.", pic: "sing.gif" }
+        ];
+
+        const learningContent = {
+            'learn-airport': [{ type: 'slide', text: 'Ready for passports for our learning trip!', gif: 'passport.gif' }],
+            'learn-australia': [
+                { slide: 1, text: 'What do you think Australians can do best?', gif: 'flag_au.gif' },
+                { slide: 2, text: 'They can jump and swim!', gifs: ['jump.gif', 'swim.gif'] },
+                { slide: 3, text: 'Can you jump?', gif: 'ask_jump.gif' },
+                { slide: 4, text: 'Can you swim?', gif: 'ask_swim.gif' },
+                { slide: 5, text: "Wow! Let's move to the next country.", gif: 'plane_flying.gif' }
+            ],
+            'learn-france': [
+                { slide: 1, text: 'What do you think French people can do best?', gif: 'flag_fr.gif' },
+                { slide: 2, text: 'They can write, read, and draw!', gifs: ['write.gif', 'read.gif', 'draw.gif'] },
+                { slide: 3, text: 'Can you write?', gif: 'ask_write.gif' },
+                { slide: 4, text: 'Can you read?', gif: 'ask_read.gif' },
+                { slide: 5, text: 'Can you draw?', gif: 'ask_draw.gif' },
+                { slide: 6, text: "Wow! Let's move to the next country.", gif: 'plane_flying.gif' }
+            ],
+            'learn-korea': [
+                { slide: 1, text: 'What do you think Koreans can do best?', gif: 'flag_kr.gif' },
+                { slide: 2, text: 'They can sing and dance!', gifs: ['sing.gif', 'dance.gif'] },
+                { slide: 3, text: 'Can you sing?', gif: 'ask_sing.gif' },
+                { slide: 4, text: 'Can you dance?', gif: 'ask_dance.gif' },
+                { slide: 5, text: "Wow! Let's move to the next country.", gif: 'plane_flying.gif' }
+            ],
+            'learn-ready': [{ type: 'slide', text: 'Stand up and grab your passports! ✈️', gif: null }],
+            'learn-posters': [{ type: 'posters' }]
+        };
+
+        const cheerSound = document.getElementById('cheer-sound');
+        const correctSound = document.getElementById('correct-sound');
+        const happySound = document.getElementById('happy-sound');
+        const sadSound = document.getElementById('sad-sound');
+        const tickingSound = document.getElementById('ticking-sound');
+        const alarmSound = document.getElementById('alarm-sound');
+        const drumrollSound = document.getElementById('drumroll-sound');
+
+        // --- NAVIGATION & PAGE ADVANCE ---
+        function openNav(e, id) {
+            hideReward();
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            const card = document.getElementById('main-card');
+            card.style.display = 'flex'; card.classList.add('active');
+            
+            document.getElementById('greetings-layout').style.display = id === 'greetings' ? 'flex' : 'none';
+            document.getElementById('warmup-layout').style.display = id === 'warmup' ? 'flex' : 'none';
+            document.getElementById('review-layout').style.display = id === 'review' ? 'flex' : 'none';
+            document.getElementById('learning-layout').style.display = id === 'learning' ? 'flex' : 'none';
+            document.getElementById('exit-layout').style.display = id === 'exit' ? 'flex' : 'none';
+            
+            if(id === 'greetings') switchSub(null, 'greet-sub');
+            if(id === 'warmup') switchSub(null, 'warmup-intro');
+            if(id === 'review') switchSub(null, 'rev-study');
+            if(id === 'learning') switchSub(null, 'learn-airport');
+            if(id === 'exit') switchSub(null, 'exit-worksheet');
+        }
+
+        function switchSub(e, subId) {
+            hideReward();
+            currentSub = subId;
+            learnSlideIdx = 0;
+            document.querySelectorAll('.sub-section').forEach(s => s.classList.remove('active'));
+            
+            if (subId.includes('learn')) {
+                document.getElementById('learning-container').classList.add('active');
+                updateLearningSlide();
+            } else {
+                document.getElementById(subId).classList.add('active');
+            }
+
+            if(e) {
+                document.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+            }
+            if(subId === 'q1-sub') { q1Index = 0; document.getElementById('q1-answer').classList.remove('show'); updateQ1(); }
+            if(subId === 'q2-sub') { q2Index = 0; document.getElementById('q2-answer').classList.remove('show'); updateQ2(); }
+            if(subId === 'rev-sentences') { revIdx = 0; updateRev(); }
+            if(subId === 'rev-quiz') { initQuiz(); }
+        }
+
+        function handleNextAction() {
+            const widgets = document.querySelectorAll('.floating-window');
+            for(let w of widgets) { if(w.style.display === 'flex') return; }
+
+            if (currentSub.includes('learn')) {
+                const slides = learningContent[currentSub];
+                if (learnSlideIdx < slides.length - 1) {
+                    learnSlideIdx++;
+                    updateLearningSlide();
+                }
+            } else if (currentSub === 'q1-sub' || currentSub === 'q2-sub') {
+                const ans = document.getElementById(currentSub === 'q1-sub' ? 'q1-answer' : 'q2-answer');
+                if (!ans.classList.contains('show')) { ans.classList.add('show'); correctSound.play(); }
+                else {
+                    let idx = currentSub === 'q1-sub' ? q1Index : q2Index;
+                    let data = currentSub === 'q1-sub' ? q1Data : q2Data;
+                    if (idx === data.length - 1) { cheerSound.play(); showReward(); }
+                    else { ans.classList.remove('show'); setTimeout(() => { if(currentSub === 'q1-sub'){ q1Index++; updateQ1();} else {q2Index++; updateQ2();} }, 200); }
+                }
+            } else if (currentSub === 'rev-sentences') {
+                const ans = document.getElementById('rev-reveal-box');
+                if (!ans.classList.contains('show')) { ans.classList.add('show'); correctSound.play(); }
+                else { if (revIdx === revData.length - 1) { cheerSound.play(); showReward(); } else { revIdx++; updateRev(); } }
+            } else if (currentSub === 'rev-quiz' && quizAnswered) {
+                if (quizIdx === quizItems.length - 1) { cheerSound.play(); showReward(); } else { quizIdx++; updateQuizSent(); }
+            }
+        }
+
+        // --- SUB-LOGIC CONTENT ---
+        function updateLearningSlide() {
+            const container = document.getElementById('learning-container');
+            const slides = learningContent[currentSub];
+            const data = slides[learnSlideIdx];
+            if (currentSub === 'learn-posters') {
+                container.innerHTML = `<div class="poster-row"><img src="image_d6e469.jpg"> <img src="poster2.jpg"> <img src="poster3.jpg"></div>`;
+                return;
+            }
+            let html = '';
+            if (data.gifs) {
+                html = `<div class="gif-row">${data.gifs.map(g => `<img src="${g}">`).join('')}</div>`;
+            } else if (data.gif) {
+                html = `<img src="${data.gif}" class="gif-flag" style="width:350px;">`;
+            }
+            html += `<h1 class="section-title" style="margin-top:20px;">${data.text}</h1>`;
+            container.innerHTML = html;
+        }
+
+        function updateRev() {
+            const data = revData[revIdx];
+            document.getElementById('rev-q-text').innerText = `Can you ${data.q}?`;
+            document.getElementById('rev-gif').src = data.gif;
+            document.getElementById('rev-thumb').src = data.thumb;
+            document.getElementById('rev-answer-text').innerText = data.ans;
+            document.getElementById('rev-reveal-box').classList.remove('show');
+        }
+
+        function initQuiz() {
+            quizIdx = 0;
+            const bank = document.getElementById('quiz-bank');
+            const words = ["can", "can't", "you", "Yes", "No", "dance"];
+            bank.innerHTML = words.map(w => `<div class="quiz-word" draggable="true" ondragstart="drag(event)" id="qw-${w}">${w}</div>`).join('');
+            updateQuizSent();
+        }
+
+        function updateQuizSent() {
+            quizAnswered = false;
+            document.getElementById('quiz-feedback').innerText = "";
+            const item = quizItems[quizIdx];
+            document.getElementById('quiz-pic').src = item.pic;
+            document.getElementById('quiz-sentence').innerHTML = item.q;
+            const box = document.querySelector('.drop-box');
+            box.addEventListener('dragover', (e) => e.preventDefault());
+            box.addEventListener('drop', (ev) => {
+                ev.preventDefault();
+                const wordId = ev.dataTransfer.getData("text");
+                const word = document.getElementById(wordId).innerText;
+                if(word === ev.target.getAttribute('data-ans')) {
+                    ev.target.innerText = word; ev.target.style.color = "#27ae60";
+                    document.getElementById('quiz-feedback').innerText = "Correct! ✨";
+                    correctSound.play(); quizAnswered = true;
+                }
+            });
+        }
+
+        function updateQ1() {
+            const data = q1Data[q1Index];
+            document.getElementById('q1-answer').innerText = data.name;
+            for(let i=1; i<=4; i++) { document.getElementById(`q1-c${i}`).src = data.imgs[i-1]; }
+        }
+
+        function updateQ2() {
+            const name = q2Data[q2Index];
+            document.getElementById('q2-gif').src = name + ".gif";
+            document.getElementById('q2-answer').innerText = name.toUpperCase();
+        }
+
+        // --- WIDGETS ---
+        function toggleWin(id) {
+            const win = document.getElementById(id);
+            win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+            if(id === 'win-pick' && studentNumbers.length === 0) resetPicker();
+        }
+
+        // Mouse Drag
+        function dragWin(e, id) {
+            const win = document.getElementById(id);
+            let px = e.clientX, py = e.clientY;
+            function move(e) {
+                win.style.left = (win.offsetLeft + e.clientX - px) + "px";
+                win.style.top = (win.offsetTop + e.clientY - py) + "px";
+                px = e.clientX; py = e.clientY;
+            }
+            function stop() { document.removeEventListener('mousemove', move); }
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', stop);
+        }
+
+        // Touch Drag for Smartboard
+        function dragWinTouch(e, id) {
+            const win = document.getElementById(id);
+            let touch = e.touches[0];
+            let px = touch.clientX, py = touch.clientY;
+            function move(e) {
+                let t = e.touches[0];
+                win.style.left = (win.offsetLeft + t.clientX - px) + "px";
+                win.style.top = (win.offsetTop + t.clientY - py) + "px";
+                px = t.clientX; py = t.clientY;
+            }
+            function stop() { document.removeEventListener('touchmove', move); }
+            document.addEventListener('touchmove', move);
+            document.addEventListener('touchend', stop);
+        }
+
+        // Whiteboard
+        const canvas = document.getElementById('whiteboard');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+        function start(e) { drawing = true; draw(e); }
+        function end() { drawing = false; ctx.beginPath(); }
+        function draw(e) {
+            if(!drawing) return;
+            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = '#8e44ad';
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+        }
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', end);
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); start(e); });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+        canvas.addEventListener('touchend', end);
+
+        function clearBoard() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+        // Timer Logic
+        let timerInterval, timeLeft = 60;
+        function setTimer() {
+            const m = parseInt(document.getElementById('t-min').value) || 0;
+            const s = parseInt(document.getElementById('t-sec').value) || 0;
+            timeLeft = (m * 60) + s;
+            updateTimerDisplay();
+        }
+        function toggleTimer() {
+            const btn = document.getElementById('timer-toggle');
+            if(timerInterval) {
+                clearInterval(timerInterval); timerInterval = null; btn.innerText = "Start Timer";
+                tickingSound.pause(); tickingSound.currentTime = 0;
+            } else {
+                timerInterval = setInterval(() => {
+                    if(timeLeft <= 0) { 
+                        clearInterval(timerInterval); 
+                        timerInterval = null;
+                        btn.innerText = "Start Timer";
+                        alarmSound.play();
+                        tickingSound.pause();
+                        return; 
+                    }
+                    timeLeft--; 
+                    updateTimerDisplay();
+                    if(timeLeft <= 8 && timeLeft > 0) tickingSound.play();
+                }, 1000);
+                btn.innerText = "Stop Timer";
+            }
+        }
+        function updateTimerDisplay() {
+            const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
+            document.getElementById('timer-txt').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+
+        // Student Picker Logic
+        let studentNumbers = [];
+        function resetPicker() {
+            const max = parseInt(document.getElementById('picker-max').value) || 0;
+            studentNumbers = Array.from({length: max}, (_, i) => i + 1);
+            document.getElementById('picker-num').innerText = "--";
+            document.getElementById('picker-left').innerText = `Numbers left: ${studentNumbers.length}`;
+            document.getElementById('roll-btn').disabled = false;
+            document.getElementById('roll-btn').style.opacity = "1";
+        }
+
+        function rollStudent() {
+            if(studentNumbers.length === 0) {
+                document.getElementById('picker-num').innerText = "Empty!";
+                return;
+            }
+            
+            drumrollSound.play();
+            let count = 0;
+            const interval = setInterval(() => {
+                const tempRoll = Math.floor(Math.random() * studentNumbers.length);
+                document.getElementById('picker-num').innerText = studentNumbers[tempRoll];
+                if(++count > 20) {
+                    clearInterval(interval);
+                    drumrollSound.pause();
+                    drumrollSound.currentTime = 0;
+                    
+                    const winnerIdx = Math.floor(Math.random() * studentNumbers.length);
+                    const winner = studentNumbers.splice(winnerIdx, 1)[0];
+                    document.getElementById('picker-num').innerText = winner;
+                    document.getElementById('picker-left').innerText = `Numbers left: ${studentNumbers.length}`;
+                    happySound.play();
+                    
+                    if(studentNumbers.length === 0) {
+                        document.getElementById('roll-btn').disabled = true;
+                        document.getElementById('roll-btn').style.opacity = "0.5";
+                    }
+                }
+            }, 100);
+        }
+
+        function toggleMusic() {
+            const m = document.getElementById('bg-music');
+            const btn = document.getElementById('music-toggle-btn');
+            if(m.paused) { m.play(); btn.innerText = "⏸️"; } else { m.pause(); btn.innerText = "🎵"; }
+        }
+
+        // --- GLOBAL CLICK & POINTER EVENTS ---
+        window.addEventListener('keydown', (e) => { 
+            if (["ArrowRight", "ArrowDown", "PageDown", "Enter", " "].includes(e.key)) { 
+                handleNextAction(); 
+            } 
+        });
+
+        window.addEventListener('mousedown', (e) => { 
+            if (!e.target.closest('button') && !e.target.closest('.quiz-word') && !e.target.closest('.weather-pill') && !e.target.closest('.emoji-source') && !e.target.closest('.floating-window') && !e.target.closest('input')) { 
+                handleNextAction(); 
+            } 
+        });
+
+        function closeCard() { document.getElementById('main-card').style.display = 'none'; }
+        function showReward() { document.getElementById('reward-screen').style.display = 'flex'; }
+        function hideReward() { document.getElementById('reward-screen').style.display = 'none'; }
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        function dragInfinite(ev) { ev.dataTransfer.setData("emoji", ev.target.innerText); ev.dataTransfer.setData("type", ev.target.getAttribute("data-type")); }
+
+        function dropWeather(ev) {
+            ev.preventDefault();
+            const id = ev.dataTransfer.getData("text");
+            const element = document.getElementById(id);
+            const text = element.innerText;
+            
+            // Update the drop zone UI
+            document.getElementById('weather-dz').innerHTML = `<div class="weather-pill">${text}</div>`;
+            
+            // Clean text for Speech: remove emojis/special characters so it only says the word
+            const cleanText = text.replace(/[^\w\s]/gi, '').trim();
+            
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function dropAndPop(ev) {
+            ev.preventDefault();
+            const type = ev.dataTransfer.getData("type");
+            const span = document.createElement("span"); span.innerText = ev.dataTransfer.getData("emoji"); span.style.fontSize = "35px";
+            document.getElementById('jar-body').appendChild(span);
+            if(type === "happy") { happySound.play(); } else { sadSound.play(); }
+        }
+
+        setInterval(() => {
+            const options = { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('clock').innerText = "Taiwan: " + new Intl.DateTimeFormat('en-US', options).format(new Date());
+        }, 1000);
+    </script>
+</body>
+</html>
