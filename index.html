@@ -30,7 +30,7 @@
         :fullscreen body { background-color: white; }
         
         /* Forces instant drag on touch devices */
-        .weather-pill, .quiz-word, .emoji-source, .emoji-gif {
+        .weather-pill, .quiz-word, .emoji-source {
             touch-action: none !important;
             user-select: none;
             -webkit-user-drag: element;
@@ -150,23 +150,24 @@
             flex-direction: column; align-items: center; justify-content: center; position: relative; text-align: center;
         }
         
-        /* UPDATED WEATHER STYLES */
-        .section-title { font-size: 70px; /* Scaled up from 45px */
+        .section-title { font-size: 45px;
             color: var(--color-purple); font-weight: 700; margin-bottom: 20px; }
-        .weather-sentence { font-size: 80px; /* Scaled up from 50px */
-            font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
-        .weather-drop-zone { width: 320px; /* Scaled up */
-            height: 110px; border: 8px dashed var(--color-purple); border-radius: 25px; display: inline-flex; align-items: center; justify-content: center; background: #fafafa;
+        .weather-sentence { font-size: 50px; font-weight: 700;
+            margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
+        .weather-drop-zone { width: 220px;
+            height: 80px; border: 5px dashed var(--color-purple); border-radius: 25px; display: inline-flex; align-items: center; justify-content: center; background: #fafafa;
         }
+        
         .weather-grid { display: grid;
-            grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 700px; }
-        .weather-pill { padding: 20px; /* Scaled up */
-            background: white; border: 4px solid var(--color-purple); border-radius: 50px; font-size: 36px; font-weight: 700; cursor: grab; display: flex; align-items: center; justify-content: center;
+            grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 550px; }
+        .weather-pill { padding: 15px;
+            background: white; border: 4px solid var(--color-purple); border-radius: 50px; font-size: 26px; font-weight: 700; cursor: grab; display: flex; align-items: center; justify-content: center;
             touch-action: none; }
         
-        /* UPDATED HOW ARE YOU STYLES */
-        .emoji-gif { width: 130px; height: 130px; cursor: grab; border: 4px solid var(--color-pink); border-radius: 20px; touch-action: none; object-fit: contain; }
-        .jar-container { width: 400px; height: 450px; background-image: url('jar_image.png'); background-size: contain; background-repeat: no-repeat; background-position: bottom; display: flex; flex-wrap: wrap; align-content: flex-end; justify-content: center; padding: 40px; position: relative; }
+        .glass-jar { width: 220px;
+            height: 200px; background: rgba(142, 68, 173, 0.05); border: 6px solid var(--color-purple); border-top: none; border-radius: 15px 15px 80px 80px; display: flex;
+            flex-wrap: wrap; align-content: flex-end; justify-content: center; padding: 15px; position: relative;
+        }
 
         .answer-reveal { 
             height: 90px;
@@ -296,12 +297,7 @@
                     <button class="side-btn" onclick="switchSub(event, 'how-are-you-sub')">How are you?</button>
                 </div>
                 <div class="card-body">
-                    <div id="greet-sub" class="sub-section active">
-                        <video width="80%" height="auto" autoplay loop muted style="border-radius: 30px; border: 8px solid var(--color-purple);">
-                            <source src="greetings_video.mp4" type="video/mp4">
-                        </video>
-                    </div>
-
+                    <div id="greet-sub" class="sub-section active"><h1 style="font-size: 70px; color: var(--color-purple);">Good afternoon! ✨</h1></div>
                     <div id="weather-sub" class="sub-section">
                         <h2 class="section-title">How's the weather?</h2>
                         <div class="weather-sentence">It's <div class="weather-drop-zone" id="weather-dz" ondrop="dropWeather(event)" ondragover="allowDrop(event)"></div>.</div>
@@ -315,11 +311,11 @@
                     
                     <div id="how-are-you-sub" class="sub-section">
                         <h2 class="section-title">How are you today?</h2>
-                        <div style="display:flex; gap:40px; margin-bottom:20px;">
-                            <img src="happy.gif" class="emoji-gif" draggable="true" data-type="happy" ondragstart="dragInfiniteGif(event)" id="happy-src">
-                            <img src="sad.gif" class="emoji-gif" draggable="true" data-type="sad" ondragstart="dragInfiniteGif(event)" id="sad-src">
+                        <div style="display:flex; gap:30px; margin-bottom:20px;">
+                            <div class="emoji-source" draggable="true" data-type="happy" style="font-size:70px; cursor:grab; border:3px solid var(--color-pink); padding:10px; border-radius:20px; touch-action: none;" ondragstart="dragInfinite(event)">😊</div>
+                            <div class="emoji-source" draggable="true" data-type="sad" style="font-size:70px; cursor:grab; border:3px solid var(--color-pink); padding:10px; border-radius:20px; touch-action: none;" ondragstart="dragInfinite(event)">😢</div>
                         </div>
-                        <div class="jar-container" id="jar-body" ondrop="dropAndPopGif(event)" ondragover="allowDrop(event)"></div>
+                        <div class="glass-jar" id="jar-body" ondrop="dropAndPop(event)" ondragover="allowDrop(event)"></div>
                     </div>
                 </div>
             </div>
@@ -437,7 +433,7 @@
     <script>
         /* --- INSTANT DRAG FIX --- */
         if (window.DragDropTouch) {
-            DragDropTouch.prototype._holdTimeout = 0;
+            DragDropTouch.prototype._holdTimeout = 0; 
         }
 
         let q1Index = 0, q2Index = 0, currentSub = 'greet-sub';
@@ -481,7 +477,7 @@
             'learn-korea': [
                 { slide: 1, text: 'What do you think Koreans can do best?', gif: 'flag_kr.gif' },
                 { slide: 2, text: 'They can sing and dance!', gifs: ['sing.gif', 'dance.gif'] },
-                { slide: 3, text: 'Can you sing?', gif: 'mask_sing.gif' },
+                { slide: 3, text: 'Can you sing?', gif: 'ask_sing.gif' },
                 { slide: 4, text: 'Can you dance?', gif: 'ask_dance.gif' },
                 { slide: 5, text: "Wow! Let's move to the next country.", gif: 'plane_flying.gif' }
             ],
@@ -508,7 +504,7 @@
 
         // --- NAVIGATION & PAGE ADVANCE ---
         function openNav(e, id) {
-            enterFullScreen();
+            enterFullScreen(); // Trigger full screen on first navigation click
             hideReward();
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             e.currentTarget.classList.add('active');
@@ -575,9 +571,11 @@
             } else if (currentSub === 'rev-sentences') {
                 const ans = document.getElementById('rev-reveal-box');
                 if (!ans.classList.contains('show')) { ans.classList.add('show'); correctSound.play(); }
-                else { if (revIdx === revData.length - 1) { cheerSound.play(); showReward(); } else { revIdx++; updateRev(); } }
+                else { if (revIdx === revData.length - 1) { cheerSound.play();
+                showReward(); } else { revIdx++; updateRev(); } }
             } else if (currentSub === 'rev-quiz' && quizAnswered) {
-                if (quizIdx === quizItems.length - 1) { cheerSound.play(); showReward(); } else { quizIdx++; updateQuizSent(); }
+                if (quizIdx === quizItems.length - 1) { cheerSound.play();
+                showReward(); } else { quizIdx++; updateQuizSent(); }
             }
         }
 
@@ -640,7 +638,8 @@
         function updateQ1() {
             const data = q1Data[q1Index];
             document.getElementById('q1-answer').innerText = data.name;
-            for(let i=1; i<=4; i++) { document.getElementById(`q1-c${i}`).src = data.imgs[i-1]; }
+            for(let i=1; i<=4; i++) { document.getElementById(`q1-c${i}`).src = data.imgs[i-1];
+            }
         }
 
         function updateQ2() {
@@ -687,6 +686,7 @@
         const canvas = document.getElementById('whiteboard');
         const ctx = canvas.getContext('2d');
         let drawing = false;
+        
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -785,14 +785,17 @@
         function toggleMusic() {
             const m = document.getElementById('bg-music');
             const btn = document.getElementById('music-toggle-btn');
-            if(m.paused) { m.play(); btn.innerText = "⏸️"; } else { m.pause(); btn.innerText = "🎵"; }
+            if(m.paused) { m.play(); btn.innerText = "⏸️"; } else { m.pause(); btn.innerText = "🎵";
+            }
         }
 
         window.addEventListener('keydown', (e) => { 
-            if (["ArrowRight", "ArrowDown", "PageDown", "Enter", " "].includes(e.key)) { handleNextAction(); } 
+            if (["ArrowRight", "ArrowDown", "PageDown", "Enter", " "].includes(e.key)) { 
+                handleNextAction(); 
+            } 
         });
         window.addEventListener('mousedown', (e) => { 
-            if (!e.target.closest('button') && !e.target.closest('.quiz-word') && !e.target.closest('.weather-pill') && !e.target.closest('.emoji-source') && !e.target.closest('.emoji-gif') && !e.target.closest('.floating-window') && !e.target.closest('input')) { 
+            if (!e.target.closest('button') && !e.target.closest('.quiz-word') && !e.target.closest('.weather-pill') && !e.target.closest('.emoji-source') && !e.target.closest('.floating-window') && !e.target.closest('input')) { 
                 handleNextAction(); 
             } 
         });
@@ -801,37 +804,26 @@
         function hideReward() { document.getElementById('reward-screen').style.display = 'none'; }
         function allowDrop(ev) { ev.preventDefault(); }
         function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
-
-        /* UPDATED DRAG/DROP LOGIC FOR GIFS */
-        function dragInfiniteGif(ev) {
-            ev.dataTransfer.setData("src", ev.target.src);
-            ev.dataTransfer.setData("type", ev.target.getAttribute("data-type"));
-        }
-
-        function dropAndPopGif(ev) {
-            ev.preventDefault();
-            const type = ev.dataTransfer.getData("type");
-            const src = ev.dataTransfer.getData("src");
-            
-            const img = document.createElement("img");
-            img.src = src;
-            img.style.width = "70px"; // Size for inside the jar
-            img.style.height = "70px";
-            img.style.margin = "2px";
-            
-            document.getElementById('jar-body').appendChild(img);
-            if(type === "happy") { happySound.play(); } else { sadSound.play(); }
-        }
+        function dragInfinite(ev) { ev.dataTransfer.setData("emoji", ev.target.innerText); ev.dataTransfer.setData("type", ev.target.getAttribute("data-type")); }
 
         function dropWeather(ev) {
             ev.preventDefault();
             const id = ev.dataTransfer.getData("text");
             const element = document.getElementById(id);
             const text = element.innerText;
-            document.getElementById('weather-dz').innerHTML = `<div class="weather-pill" style="font-size:36px; padding:10px;">${text}</div>`;
+            document.getElementById('weather-dz').innerHTML = `<div class="weather-pill">${text}</div>`;
             const cleanText = text.replace(/[^\w\s]/gi, '').trim();
             const utterance = new SpeechSynthesisUtterance(cleanText);
             window.speechSynthesis.speak(utterance);
+        }
+
+        function dropAndPop(ev) {
+            ev.preventDefault();
+            const type = ev.dataTransfer.getData("type");
+            const span = document.createElement("span"); span.innerText = ev.dataTransfer.getData("emoji"); span.style.fontSize = "35px";
+            document.getElementById('jar-body').appendChild(span);
+            if(type === "happy") { happySound.play();
+            } else { sadSound.play(); }
         }
 
         setInterval(() => {
