@@ -26,10 +26,6 @@
             touch-action: none;
         }
 
-        /* Full Screen & Instant Drag Optimization */
-        :fullscreen body { background-color: white; }
-        
-        /* Forces instant drag on touch devices */
         .weather-pill, .quiz-word, .emoji-source {
             touch-action: none !important;
             user-select: none;
@@ -69,168 +65,64 @@
             margin-bottom: 12px;
             cursor: move; background: #f9f9f9; padding: 15px 12px; border-radius: 15px;
         }
-        .window-title { font-weight: 800; color: var(--color-purple); font-size: 14px; pointer-events: none;
-        }
-        .close-win { cursor: pointer; font-weight: 900; color: #ff7675; font-size: 24px; padding: 5px;
-        }
+        .window-title { font-weight: 800; color: var(--color-purple); font-size: 14px; pointer-events: none; }
+        .close-win { cursor: pointer; font-weight: 900; color: #ff7675; font-size: 24px; padding: 5px; }
         
-        #whiteboard { border: 2px solid #eee;
-            background: #fff; cursor: crosshair; touch-action: none; border-radius: 15px; width: 100%; height: 350px;
-        }
+        #whiteboard { border: 2px solid #eee; background: #fff; cursor: crosshair; touch-action: none; border-radius: 15px; width: 100%; height: 350px; }
         
-        /* Picker Styles */
-        .picker-display { font-size: 90px;
-            font-weight: 800; color: #e67e22; text-align: center; margin: 5px 0; height: 110px; display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        .picker-controls { display: flex; gap: 10px; margin-bottom: 10px;
-        }
-        .picker-controls input { width: 100%; padding: 10px; border-radius: 10px;
-            border: 2px solid var(--color-purple); font-family: 'Fredoka'; font-weight: 700; }
-        .remaining-count { font-size: 14px;
-            text-align: center; color: #7f8c8d; margin-top: 5px; }
+        .picker-display { font-size: 90px; font-weight: 800; color: #e67e22; text-align: center; margin: 5px 0; height: 110px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .picker-controls { display: flex; gap: 10px; margin-bottom: 10px; }
+        .picker-controls input { width: 100%; padding: 10px; border-radius: 10px; border: 2px solid var(--color-purple); font-family: 'Fredoka'; font-weight: 700; }
+        .remaining-count { font-size: 14px; text-align: center; color: #7f8c8d; margin-top: 5px; }
 
-        .timer-widget-display { font-size: 60px; font-weight: 800;
-            color: #e74c3c; text-align: center; margin: 5px 0; }
-        .timer-input-area { display: flex;
-            justify-content: center; align-items: center; gap: 5px; margin-bottom: 10px; font-size: 14px;
-        }
-        .timer-input-area input { width: 55px; height: 40px; border-radius: 8px;
-            border: 2px solid var(--color-purple); text-align: center; font-family: 'Fredoka'; font-weight: 700; font-size: 18px;
-        }
-        .win-btn { background: var(--color-purple); color: white; border: none; padding: 15px; border-radius: 15px;
-            cursor: pointer; font-family: 'Fredoka'; font-weight: 700; width: 100%; margin-top: 5px; font-size: 18px; touch-action: manipulation;
-        }
+        .timer-widget-display { font-size: 60px; font-weight: 800; color: #e74c3c; text-align: center; margin: 5px 0; }
+        .timer-input-area { display: flex; justify-content: center; align-items: center; gap: 5px; margin-bottom: 10px; font-size: 14px; }
+        .timer-input-area input { width: 55px; height: 40px; border-radius: 8px; border: 2px solid var(--color-purple); text-align: center; font-family: 'Fredoka'; font-weight: 700; font-size: 18px; }
+        .win-btn { background: var(--color-purple); color: white; border: none; padding: 15px; border-radius: 15px; cursor: pointer; font-family: 'Fredoka'; font-weight: 700; width: 100%; margin-top: 5px; font-size: 18px; touch-action: manipulation; }
 
-        .close-btn {
-            position: absolute;
-            top: 20px; right: 25px; width: 55px; height: 55px;
-            background: #ff7675; color: white; border: none; border-radius: 50%;
-            font-size: 28px; font-weight: 900;
-            cursor: pointer; z-index: 101;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 0px #d63031; transition: 0.1s;
-        }
+        .close-btn { position: absolute; top: 20px; right: 25px; width: 55px; height: 55px; background: #ff7675; color: white; border: none; border-radius: 50%; font-size: 28px; font-weight: 900; cursor: pointer; z-index: 101; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0px #d63031; transition: 0.1s; }
 
-        .main-view { height: 78vh; display: flex; justify-content: center; align-items: center; padding: 10px;
-            margin-top: 2vh; }
+        .main-view { height: 78vh; display: flex; justify-content: center; align-items: center; padding: 10px; margin-top: 2vh; }
+        .content-card { display: none; background: var(--pure-white); width: 95%; max-width: 1100px; height: 100%; border-radius: 40px; border: 8px solid var(--color-pink); position: relative; overflow: hidden; z-index: 10; }
+        .content-card.active { display: flex; }
 
-        .content-card {
-            display: none;
-            background: var(--pure-white); width: 95%; max-width: 1100px;
-            height: 100%; border-radius: 40px; border: 8px solid var(--color-pink);
-            position: relative; overflow: hidden; z-index: 10;
-        }
-        .content-card.active { display: flex;
-        }
+        #reward-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); z-index: 200; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        #reward-screen h2 { font-size: 80px; color: var(--color-purple); margin: 0; animation: bounce 0.6s infinite alternate; }
 
-        #reward-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            z-index: 200; display: none; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-        }
-        #reward-screen h2 { font-size: 80px;
-            color: var(--color-purple); margin: 0; animation: bounce 0.6s infinite alternate; }
+        .side-tabs { width: 150px; background: var(--bg-side); display: flex; flex-direction: column; padding: 15px 8px; gap: 10px; border-right: 4px solid var(--color-pink); }
+        .side-btn { flex: 1; border: 3px solid transparent; background: white; cursor: pointer; font-family: 'Fredoka'; font-weight: 700; font-size: 24px; color: #a4b0be; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; border-radius: 20px; transition: 0.2s; touch-action: manipulation; }
+        .side-btn.active { color: white; background: var(--color-purple); font-size: 26px; }
 
-        .side-tabs { width: 150px;
-            background: var(--bg-side); display: flex; flex-direction: column; padding: 15px 8px; gap: 10px; border-right: 4px solid var(--color-pink);
-        }
-        .side-btn {
-            flex: 1;
-            border: 3px solid transparent; background: white; cursor: pointer; font-family: 'Fredoka';
-            font-weight: 700; font-size: 24px; color: #a4b0be; writing-mode: vertical-rl; transform: rotate(180deg);
-            text-align: center; border-radius: 20px; transition: 0.2s;
-            touch-action: manipulation;
-        }
-        .side-btn.active { color: white;
-            background: var(--color-purple); font-size: 26px; }
+        .card-body { flex: 1; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; text-align: center; }
+        .section-title { font-size: 45px; color: var(--color-purple); font-weight: 700; margin-bottom: 20px; }
+        .weather-sentence { font-size: 50px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
+        .weather-drop-zone { width: 220px; height: 80px; border: 5px dashed var(--color-purple); border-radius: 25px; display: inline-flex; align-items: center; justify-content: center; background: #fafafa; }
+        .weather-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 550px; }
+        .weather-pill { padding: 15px; background: white; border: 4px solid var(--color-purple); border-radius: 50px; font-size: 26px; font-weight: 700; cursor: grab; display: flex; align-items: center; justify-content: center; touch-action: none; }
+        .glass-jar { width: 220px; height: 200px; background: rgba(142, 68, 173, 0.05); border: 6px solid var(--color-purple); border-top: none; border-radius: 15px 15px 80px 80px; display: flex; flex-wrap: wrap; align-content: flex-end; justify-content: center; padding: 15px; position: relative; }
 
-        .card-body { flex: 1; padding: 20px; display: flex;
-            flex-direction: column; align-items: center; justify-content: center; position: relative; text-align: center;
-        }
+        .answer-reveal { height: 90px; display: flex; align-items: center; justify-content: center; font-size: 60px; font-weight: 900; color: #27ae60; background: white; padding: 0 50px; border-radius: 30px; border: 6px solid #2ecc71; box-shadow: 0 8px 0px #27ae60; opacity: 0; visibility: hidden; transition: opacity 0.15s; margin-top: 15px; }
+        .answer-reveal.show { opacity: 1; visibility: visible; }
         
-        .section-title { font-size: 45px;
-            color: var(--color-purple); font-weight: 700; margin-bottom: 20px; }
-        .weather-sentence { font-size: 50px; font-weight: 700;
-            margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
-        .weather-drop-zone { width: 220px;
-            height: 80px; border: 5px dashed var(--color-purple); border-radius: 25px; display: inline-flex; align-items: center; justify-content: center; background: #fafafa;
-        }
+        .clue-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 10px 0; }
+        .clue-box { width: 200px; height: 130px; background: #f0f0f0; border: 4px solid var(--color-pink); border-radius: 20px; overflow: hidden; }
+        .clue-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .gif-display { width: 380px; height: 260px; background: #f9f9f9; border: 5px solid var(--color-pink); border-radius: 30px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .gif-display img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .drop-box { width: 180px; height: 80px; border-bottom: 6px solid var(--color-purple); display: inline-flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 10px; margin: 0 10px; vertical-align: middle; }
+        .quiz-word-bank { display: flex; gap: 15px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
+        .quiz-word { padding: 15px 30px; background: white; border: 3px solid var(--color-purple); border-radius: 50px; font-size: 28px; font-weight: 700; cursor: grab; touch-action: none; }
+
+        .nav-container { height: 18vh; display: flex; justify-content: center; align-items: center; gap: 15px; }
+        .tab-btn { background: white; color: var(--color-purple); border: 3px solid var(--color-purple); padding: 15px 35px; cursor: pointer; font-family: 'Fredoka'; font-size: 24px; font-weight: 700; border-radius: 20px; box-shadow: 0 6px 0px var(--color-purple); touch-action: manipulation; }
+        .tab-btn.active { background: var(--color-purple); color: white; transform: translateY(4px); box-shadow: none; }
         
-        .weather-grid { display: grid;
-            grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 550px; }
-        .weather-pill { padding: 15px;
-            background: white; border: 4px solid var(--color-purple); border-radius: 50px; font-size: 26px; font-weight: 700; cursor: grab; display: flex; align-items: center; justify-content: center;
-            touch-action: none; }
-        
-        .glass-jar { width: 220px;
-            height: 200px; background: rgba(142, 68, 173, 0.05); border: 6px solid var(--color-purple); border-top: none; border-radius: 15px 15px 80px 80px; display: flex;
-            flex-wrap: wrap; align-content: flex-end; justify-content: center; padding: 15px; position: relative;
-        }
+        .sub-section { display: none; width: 100%; flex-direction: column; align-items: center; height: 100%; justify-content: center; }
+        .sub-section.active { display: flex; }
 
-        .answer-reveal { 
-            height: 90px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 60px; font-weight: 900; color: #27ae60; background: white; padding: 0 50px; 
-            border-radius: 30px;
-            border: 6px solid #2ecc71; box-shadow: 0 8px 0px #27ae60;
-            opacity: 0; visibility: hidden; transition: opacity 0.15s; margin-top: 15px;
-        }
-        .answer-reveal.show { opacity: 1; visibility: visible;
-        }
-        
-        .clue-grid { display: grid;
-            grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 10px 0; }
-        .clue-box { width: 200px;
-            height: 130px; background: #f0f0f0; border: 4px solid var(--color-pink); border-radius: 20px; overflow: hidden;
-        }
-        .clue-box img { width: 100%; height: 100%; object-fit: cover;
-        }
-
-        .gif-display { width: 380px; height: 260px; background: #f9f9f9; border: 5px solid var(--color-pink);
-            border-radius: 30px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-        }
-        .gif-display img { max-width: 100%; max-height: 100%; object-fit: contain;
-        }
-
-        .drop-box { width: 180px; height: 80px; border-bottom: 6px solid var(--color-purple); display: inline-flex;
-            align-items: center; justify-content: center; background: #f9f9f9; border-radius: 10px; margin: 0 10px; vertical-align: middle;
-        }
-        .quiz-word-bank { display: flex; gap: 15px; margin-top: 30px; flex-wrap: wrap; justify-content: center;
-        }
-        .quiz-word { padding: 15px 30px; background: white; border: 3px solid var(--color-purple);
-            border-radius: 50px; font-size: 28px; font-weight: 700; cursor: grab; touch-action: none;
-        }
-
-        .gif-flag { width: 320px; border-radius: 20px; border: 6px solid var(--color-pink); margin-bottom: 20px;
-        }
-        .gif-row { display: flex; gap: 20px; justify-content: center; margin-top: 15px;
-        }
-        .gif-row img { width: 220px; height: 160px; border-radius: 20px;
-            border: 4px solid #eee; object-fit: cover; background: white; }
-        
-        .poster-row { display: flex;
-            gap: 15px; justify-content: center; }
-        .poster-row img { width: 220px; height: 300px;
-            object-fit: cover; border-radius: 15px; border: 5px solid var(--color-purple); }
-
-        .nav-container { height: 18vh;
-            display: flex; justify-content: center; align-items: center; gap: 15px; }
-        .tab-btn { background: white;
-            color: var(--color-purple); border: 3px solid var(--color-purple); padding: 15px 35px; cursor: pointer; font-family: 'Fredoka'; font-size: 24px; font-weight: 700; border-radius: 20px;
-            box-shadow: 0 6px 0px var(--color-purple); touch-action: manipulation; }
-        .tab-btn.active { background: var(--color-purple);
-            color: white; transform: translateY(4px); box-shadow: none; }
-        
-        .sub-section { display: none;
-            width: 100%; flex-direction: column; align-items: center; height: 100%; justify-content: center;
-        }
-        .sub-section.active { display: flex;
-        }
-
-        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-20px);
-        } }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-20px); } }
     </style>
 </head>
 <body>
@@ -308,7 +200,6 @@
                             <div class="weather-pill" draggable="true" ondragstart="drag(event)" id="stormy">⛈️ stormy</div>
                         </div>
                     </div>
-                    
                     <div id="how-are-you-sub" class="sub-section">
                         <h2 class="section-title">How are you today?</h2>
                         <div style="display:flex; gap:30px; margin-bottom:20px;">
@@ -431,14 +322,12 @@
     <audio id="drumroll-sound" src="drumroll.mp3"></audio>
 
     <script>
-        /* --- INSTANT DRAG FIX --- */
-        if (window.DragDropTouch) {
-            DragDropTouch.prototype._holdTimeout = 0; 
-        }
+        if (window.DragDropTouch) { DragDropTouch.prototype._holdTimeout = 0; }
 
         let q1Index = 0, q2Index = 0, currentSub = 'greet-sub';
         let revIdx = 0, quizIdx = 0, quizAnswered = false;
         let learnSlideIdx = 0;
+
         const q1Data = [
             { name: "AUSTRALIA", imgs: ["au1.jpg", "au2.jpg", "au3.jpg", "au4.jpg"] },
             { name: "FRANCE", imgs: ["fr1.jpg", "fr2.jpg", "fr3.jpg", "fr4.jpg"] },
@@ -449,7 +338,7 @@
             { q: "dance", gif: "dance.gif", thumb: "up.gif", ans: "Yes, I can.", ok: true },
             { q: "swim",  gif: "read.gif",  thumb: "down.gif", ans: "No, I can't.", ok: false },
             { q: "jump",  gif: "jump.gif",  thumb: "up.gif", ans: "Yes, I can.", ok: true },
-            { q: "read",  gif: "sing.gif", thumb: "down.gif", ans: "No, I can't.", ok: false },
+            { q: "read",  gif: "sing.gif",  thumb: "down.gif", ans: "No, I can't.", ok: false },
             { q: "write", gif: "write.gif", thumb: "up.gif", ans: "Yes, I can.", ok: true }
         ];
         const quizItems = [
@@ -457,6 +346,7 @@
             { q: "Can you jump? <br> Yes, I <div class='drop-box' data-ans='can'></div>.", pic: "jump.gif" },
             { q: "Can <div class='drop-box' data-ans='you'></div> sing? <br> Yes, I can.", pic: "sing.gif" }
         ];
+
         const learningContent = {
             'learn-airport': [{ type: 'slide', text: 'Ready for passports for our learning trip!', gif: 'passport.gif' }],
             'learn-australia': [
@@ -493,18 +383,14 @@
         const alarmSound = document.getElementById('alarm-sound');
         const drumrollSound = document.getElementById('drumroll-sound');
 
-        /* --- FULL SCREEN LOGIC --- */
         function enterFullScreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.warn(`Fullscreen error: ${err.message}`);
-                });
+                document.documentElement.requestFullscreen().catch(err => console.warn(err.message));
             }
         }
 
-        // --- NAVIGATION & PAGE ADVANCE ---
         function openNav(e, id) {
-            enterFullScreen(); // Trigger full screen on first navigation click
+            enterFullScreen();
             hideReward();
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             e.currentTarget.classList.add('active');
@@ -553,10 +439,7 @@
 
             if (currentSub.includes('learn')) {
                 const slides = learningContent[currentSub];
-                if (learnSlideIdx < slides.length - 1) {
-                    learnSlideIdx++;
-                    updateLearningSlide();
-                }
+                if (learnSlideIdx < slides.length - 1) { learnSlideIdx++; updateLearningSlide(); }
             } else if (currentSub === 'q1-sub' || currentSub === 'q2-sub') {
                 const ans = document.getElementById(currentSub === 'q1-sub' ? 'q1-answer' : 'q2-answer');
                 if (!ans.classList.contains('show')) { ans.classList.add('show'); correctSound.play(); }
@@ -564,22 +447,17 @@
                     let idx = currentSub === 'q1-sub' ? q1Index : q2Index;
                     let data = currentSub === 'q1-sub' ? q1Data : q2Data;
                     if (idx === data.length - 1) { cheerSound.play(); showReward(); }
-                    else { ans.classList.remove('show');
-                    setTimeout(() => { if(currentSub === 'q1-sub'){ q1Index++; updateQ1();} else {q2Index++; updateQ2();} }, 200);
-                    }
+                    else { ans.classList.remove('show'); setTimeout(() => { if(currentSub === 'q1-sub'){ q1Index++; updateQ1();} else {q2Index++; updateQ2();} }, 200); }
                 }
             } else if (currentSub === 'rev-sentences') {
                 const ans = document.getElementById('rev-reveal-box');
                 if (!ans.classList.contains('show')) { ans.classList.add('show'); correctSound.play(); }
-                else { if (revIdx === revData.length - 1) { cheerSound.play();
-                showReward(); } else { revIdx++; updateRev(); } }
+                else { if (revIdx === revData.length - 1) { cheerSound.play(); showReward(); } else { revIdx++; updateRev(); } }
             } else if (currentSub === 'rev-quiz' && quizAnswered) {
-                if (quizIdx === quizItems.length - 1) { cheerSound.play();
-                showReward(); } else { quizIdx++; updateQuizSent(); }
+                if (quizIdx === quizItems.length - 1) { cheerSound.play(); showReward(); } else { quizIdx++; updateQuizSent(); }
             }
         }
 
-        // --- SUB-LOGIC CONTENT ---
         function updateLearningSlide() {
             const container = document.getElementById('learning-container');
             const slides = learningContent[currentSub];
@@ -589,11 +467,8 @@
                 return;
             }
             let html = '';
-            if (data.gifs) {
-                html = `<div class="gif-row">${data.gifs.map(g => `<img src="${g}">`).join('')}</div>`;
-            } else if (data.gif) {
-                html = `<img src="${data.gif}" class="gif-flag" style="width:350px;">`;
-            }
+            if (data.gifs) { html = `<div class="gif-row">${data.gifs.map(g => `<img src="${g}">`).join('')}</div>`; }
+            else if (data.gif) { html = `<img src="${data.gif}" class="gif-flag" style="width:350px;">`; }
             html += `<h1 class="section-title" style="margin-top:20px;">${data.text}</h1>`;
             container.innerHTML = html;
         }
@@ -638,8 +513,7 @@
         function updateQ1() {
             const data = q1Data[q1Index];
             document.getElementById('q1-answer').innerText = data.name;
-            for(let i=1; i<=4; i++) { document.getElementById(`q1-c${i}`).src = data.imgs[i-1];
-            }
+            for(let i=1; i<=4; i++) { document.getElementById(`q1-c${i}`).src = data.imgs[i-1]; }
         }
 
         function updateQ2() {
@@ -648,7 +522,7 @@
             document.getElementById('q2-answer').innerText = name.toUpperCase();
         }
 
-        // --- WIDGETS ---
+        /* --- WIDGET LOGIC --- */
         function toggleWin(id) {
             const win = document.getElementById(id);
             win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
@@ -658,11 +532,7 @@
         function dragWin(e, id) {
             const win = document.getElementById(id);
             let px = e.clientX, py = e.clientY;
-            function move(e) {
-                win.style.left = (win.offsetLeft + e.clientX - px) + "px";
-                win.style.top = (win.offsetTop + e.clientY - py) + "px";
-                px = e.clientX; py = e.clientY;
-            }
+            function move(e) { win.style.left = (win.offsetLeft + e.clientX - px) + "px"; win.style.top = (win.offsetTop + e.clientY - py) + "px"; px = e.clientX; py = e.clientY; }
             function stop() { document.removeEventListener('mousemove', move); }
             document.addEventListener('mousemove', move);
             document.addEventListener('mouseup', stop);
@@ -672,21 +542,16 @@
             const win = document.getElementById(id);
             let touch = e.touches[0];
             let px = touch.clientX, py = touch.clientY;
-            function move(e) {
-                let t = e.touches[0];
-                win.style.left = (win.offsetLeft + t.clientX - px) + "px";
-                win.style.top = (win.offsetTop + t.clientY - py) + "px";
-                px = t.clientX; py = t.clientY;
-            }
+            function move(e) { let t = e.touches[0]; win.style.left = (win.offsetLeft + t.clientX - px) + "px"; win.style.top = (win.offsetTop + t.clientY - py) + "px"; px = t.clientX; py = t.clientY; }
             function stop() { document.removeEventListener('touchmove', move); }
             document.addEventListener('touchmove', move);
             document.addEventListener('touchend', stop);
         }
 
+        /* --- WHITEBOARD --- */
         const canvas = document.getElementById('whiteboard');
         const ctx = canvas.getContext('2d');
         let drawing = false;
-        
         function getPos(e) {
             const rect = canvas.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -710,41 +575,24 @@
         canvas.addEventListener('touchend', end);
         function clearBoard() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
+        /* --- TIMER --- */
         let timerInterval, timeLeft = 60;
-        function setTimer() {
-            const m = parseInt(document.getElementById('t-min').value) || 0;
-            const s = parseInt(document.getElementById('t-sec').value) || 0;
-            timeLeft = (m * 60) + s;
-            updateTimerDisplay();
-        }
+        function setTimer() { const m = parseInt(document.getElementById('t-min').value) || 0; const s = parseInt(document.getElementById('t-sec').value) || 0; timeLeft = (m * 60) + s; updateTimerDisplay(); }
         function toggleTimer() {
             const btn = document.getElementById('timer-toggle');
-            if(timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null; btn.innerText = "Start Timer";
-                tickingSound.pause(); tickingSound.currentTime = 0;
-            } else {
+            if(timerInterval) { clearInterval(timerInterval); timerInterval = null; btn.innerText = "Start Timer"; tickingSound.pause(); tickingSound.currentTime = 0; }
+            else {
                 timerInterval = setInterval(() => {
-                    if(timeLeft <= 0) { 
-                        clearInterval(timerInterval); 
-                        timerInterval = null;
-                        btn.innerText = "Start Timer";
-                        alarmSound.play();
-                        tickingSound.pause();
-                        return; 
-                    }
-                    timeLeft--; 
-                    updateTimerDisplay();
+                    if(timeLeft <= 0) { clearInterval(timerInterval); timerInterval = null; btn.innerText = "Start Timer"; alarmSound.play(); tickingSound.pause(); return; }
+                    timeLeft--; updateTimerDisplay();
                     if(timeLeft <= 8 && timeLeft > 0) tickingSound.play();
                 }, 1000);
                 btn.innerText = "Stop Timer";
             }
         }
-        function updateTimerDisplay() {
-            const m = Math.floor(timeLeft / 60), s = timeLeft % 60;
-            document.getElementById('timer-txt').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-        }
+        function updateTimerDisplay() { const m = Math.floor(timeLeft / 60), s = timeLeft % 60; document.getElementById('timer-txt').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
 
+        /* --- PICKER --- */
         let studentNumbers = [];
         function resetPicker() {
             const max = parseInt(document.getElementById('picker-max').value) || 0;
@@ -754,12 +602,8 @@
             document.getElementById('roll-btn').disabled = false;
             document.getElementById('roll-btn').style.opacity = "1";
         }
-
         function rollStudent() {
-            if(studentNumbers.length === 0) {
-                document.getElementById('picker-num').innerText = "Empty!";
-                return;
-            }
+            if(studentNumbers.length === 0) { document.getElementById('picker-num').innerText = "Empty!"; return; }
             drumrollSound.play();
             let count = 0;
             const interval = setInterval(() => {
@@ -767,17 +611,13 @@
                 document.getElementById('picker-num').innerText = studentNumbers[tempRoll];
                 if(++count > 20) {
                     clearInterval(interval);
-                    drumrollSound.pause();
-                    drumrollSound.currentTime = 0;
+                    drumrollSound.pause(); drumrollSound.currentTime = 0;
                     const winnerIdx = Math.floor(Math.random() * studentNumbers.length);
                     const winner = studentNumbers.splice(winnerIdx, 1)[0];
                     document.getElementById('picker-num').innerText = winner;
                     document.getElementById('picker-left').innerText = `Numbers left: ${studentNumbers.length}`;
                     happySound.play();
-                    if(studentNumbers.length === 0) {
-                        document.getElementById('roll-btn').disabled = true;
-                        document.getElementById('roll-btn').style.opacity = "0.5";
-                    }
+                    if(studentNumbers.length === 0) { document.getElementById('roll-btn').disabled = true; document.getElementById('roll-btn').style.opacity = "0.5"; }
                 }
             }, 100);
         }
@@ -785,20 +625,11 @@
         function toggleMusic() {
             const m = document.getElementById('bg-music');
             const btn = document.getElementById('music-toggle-btn');
-            if(m.paused) { m.play(); btn.innerText = "⏸️"; } else { m.pause(); btn.innerText = "🎵";
-            }
+            if(m.paused) { m.play(); btn.innerText = "⏸️"; } else { m.pause(); btn.innerText = "🎵"; }
         }
 
-        window.addEventListener('keydown', (e) => { 
-            if (["ArrowRight", "ArrowDown", "PageDown", "Enter", " "].includes(e.key)) { 
-                handleNextAction(); 
-            } 
-        });
-        window.addEventListener('mousedown', (e) => { 
-            if (!e.target.closest('button') && !e.target.closest('.quiz-word') && !e.target.closest('.weather-pill') && !e.target.closest('.emoji-source') && !e.target.closest('.floating-window') && !e.target.closest('input')) { 
-                handleNextAction(); 
-            } 
-        });
+        window.addEventListener('keydown', (e) => { if (["ArrowRight", "ArrowDown", "PageDown", "Enter", " "].includes(e.key)) { handleNextAction(); } });
+        window.addEventListener('mousedown', (e) => { if (!e.target.closest('button') && !e.target.closest('.quiz-word') && !e.target.closest('.weather-pill') && !e.target.closest('.emoji-source') && !e.target.closest('.floating-window') && !e.target.closest('input')) { handleNextAction(); } });
         function closeCard() { document.getElementById('main-card').style.display = 'none'; }
         function showReward() { document.getElementById('reward-screen').style.display = 'flex'; }
         function hideReward() { document.getElementById('reward-screen').style.display = 'none'; }
@@ -822,8 +653,7 @@
             const type = ev.dataTransfer.getData("type");
             const span = document.createElement("span"); span.innerText = ev.dataTransfer.getData("emoji"); span.style.fontSize = "35px";
             document.getElementById('jar-body').appendChild(span);
-            if(type === "happy") { happySound.play();
-            } else { sadSound.play(); }
+            if(type === "happy") { happySound.play(); } else { sadSound.play(); }
         }
 
         setInterval(() => {
