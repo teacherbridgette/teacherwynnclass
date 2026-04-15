@@ -6,7 +6,21 @@
     <title>Interactive Lesson - GIF Travel Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/drag-drop-touch/1.1.0/dragdroptouch.min.js"></script>
+.choice-text {
+    font-family:'Fredoka';
+    font-variant: small-caps;
+    font-size:40px;
+    letter-spacing:2px;
+}
 
+@keyframes shake {
+0%{transform:translateX(0);}
+25%{transform:translateX(-10px);}
+50%{transform:translateX(10px);}
+75%{transform:translateX(-10px);}
+100%{transform:translateX(0);}
+}
+.shake{animation:shake 0.4s;}
     <style>
         :root {
             --color-pink: #ffccd5;
@@ -229,7 +243,9 @@
         }
 
         @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-20px);
-        } }
+        } }#q1-sub h2 { font-size: 60px !important; }
+.clue-box { width: 300px !important; height: 200px !important; }
+#q1-answer { font-size: 90px !important; }
     </style>
 </head>
 <body>
@@ -297,8 +313,9 @@
                 </div>
                 <div class="card-body">
                     <div id="greet-sub" class="sub-section active">
-                        <video width="80%" height="auto" autoplay loop muted style="border-radius: 30px; border: 8px solid var(--color-purple);">
+                        <video autoplay loop muted style="width:100%; height:100%; object-fit:cover; border-radius:30px; border:8px solid var(--color-purple);">
                             <source src="greetings_video.mp4" type="video/mp4">
+                            Your browser does not support the video tag. Please update your browser or try a different one.
                         </video>
                     </div>
 
@@ -342,12 +359,16 @@
                         <div id="q1-answer" class="answer-reveal">AUSTRALIA</div>
                     </div>
                     <div id="q2-sub" class="sub-section">
-                        <h2 style="font-size: 35px; margin:0 0 10px 0;">Guess the Action!</h2>
-                        <div class="gif-display"><img id="q2-gif" src=""></div>
-                        <div id="q2-answer" class="answer-reveal">SWIM</div>
-                    </div>
-                </div>
-            </div>
+                        <div id="q2-sub" class="sub-section">
+    <h2 style="font-size:60px; margin-bottom:20px;">Listen and Click 👂</h2>
+
+    <div style="display:flex; flex-direction:column; align-items:center; gap:20px;">
+        <button onclick="playAudio()" style="font-size:60px; border-radius:50%; padding:20px;">🔊</button>
+        <button onclick="playAudio()" style="font-size:30px;">Play Again</button>
+    </div>
+
+    <div id="choices" style="display:grid; grid-template-columns:repeat(2,1fr); gap:30px; margin-top:30px; width:100%;"></div>
+</div>
 
             <div id="review-layout" style="display: none; width: 100%; height: 100%;">
                 <div class="side-tabs">
@@ -643,11 +664,64 @@
             for(let i=1; i<=4; i++) { document.getElementById(`q1-c${i}`).src = data.imgs[i-1]; }
         }
 
-        function updateQ2() {
-            const name = q2Data[q2Index];
-            document.getElementById('q2-gif').src = name + ".gif";
-            document.getElementById('q2-answer').innerText = name.toUpperCase();
+        const listenAudios = [
+"listen_dance.mp3",
+"listen_draw.mp3",
+"listen_write.mp3",
+"listen_sing.mp3",
+"listen_read.mp3",
+"listen_swim.mp3",
+"listen_jump.mp3"
+];
+
+const listenAnswers = [
+"dance","draw","write","sing","read","swim","jump"
+];
+
+let listenIndex = 0;
+let listenAudio = new Audio();
+
+function updateQ2(){
+    listenAudio.src = listenAudios[listenIndex];
+    loadChoices();
+}
+
+function playAudio(){
+    listenAudio.play();
+}
+
+function loadChoices(){
+    const container = document.getElementById("choices");
+    const actions = [...listenAnswers];
+    const shuffled = actions.sort(()=>0.5-Math.random()).slice(0,4);
+
+    container.innerHTML = shuffled.map(act=>`
+        <div onclick="checkAnswer('${act}')" style="cursor:pointer;text-align:center;">
+            <img src="${act}.gif" style="width:220px;height:220px;">
+            <div class="choice-text">${act}</div>
+        </div>
+    `).join('');
+}
+
+function checkAnswer(choice){
+    const container = document.getElementById("choices");
+
+    if(choice === listenAnswers[listenIndex]){
+        correctSound.play();
+        listenIndex++;
+
+        if(listenIndex >= listenAudios.length){
+            showReward();
+            return;
         }
+
+        updateQ2();
+    } else {
+        sadSound.play();
+        container.classList.add("shake");
+        setTimeout(()=>container.classList.remove("shake"),400);
+    }
+}
 
         // --- WIDGETS ---
         function toggleWin(id) {
